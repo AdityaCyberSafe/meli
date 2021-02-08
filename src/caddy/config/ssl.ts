@@ -35,6 +35,16 @@ export function generateManualCertificatesConfig(sites: Site[]) {
   };
 }
 
+export function generateSiteManualCertificateConfigurations(site: Site) {
+  return site.domains
+    .filter(domain => domain?.sslConfiguration?.type === 'manual')
+    .map(domain => ({
+      certificate: (domain.sslConfiguration as ManualSslConfiguration).fullchain,
+      key: (domain.sslConfiguration as ManualSslConfiguration).privateKey,
+      tags: getDomainWithBranches(domain, site),
+    }));
+}
+
 export function generateServerTlsConfig(sites: Site[]) {
   const customDomains = sites.flatMap(site => (
     site.domains.map(domain => ({
